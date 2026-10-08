@@ -1,10 +1,50 @@
+// 清单最后一次用 `npm run feeds:check` 真实抓取验证的日期。
+export const VERIFIED_ON = '2026-10-08';
+
 export const CURATED_FEEDS = [
-  {
-    id: 'simonwillison',
-    name: 'Simon Willison',
-    category: 'article',
-    siteUrl: 'https://simonwillison.net',
-    feedUrl: 'https://simonwillison.net/atom/everything/',
-    note: 'Agent 工程实践、工具调用与 LLM 观察',
-  },
+  { id: 'simon-willison', name: 'Simon Willison', category: 'article', siteUrl: 'https://simonwillison.net', feedUrl: 'https://simonwillison.net/atom/everything/', note: 'Agent 工程、工具调用与模型实操' },
+  { id: 'lilian-weng', name: 'Lilian Weng', category: 'article', siteUrl: 'https://lilianweng.github.io', feedUrl: 'https://lilianweng.github.io/index.xml', note: 'Agent、记忆与自我改进长文' },
+  { id: 'eugene-yan', name: 'Eugene Yan', category: 'article', siteUrl: 'https://eugeneyan.com', feedUrl: 'https://eugeneyan.com/rss/', note: 'LLM 评测与 Agent 落地经验' },
+  { id: 'hamel-husain', name: 'Hamel Husain', category: 'article', siteUrl: 'https://hamel.dev', feedUrl: 'https://hamel.dev/index.xml', note: '评测数据集与 Agent 质量工程' },
+  { id: 'ahead-of-ai', name: 'Ahead of AI', category: 'article', siteUrl: 'https://magazine.sebastianraschka.com', feedUrl: 'https://magazine.sebastianraschka.com/feed', note: '模型与训练研究解读' },
+  { id: 'interconnects', name: 'Interconnects', category: 'article', siteUrl: 'https://www.interconnects.ai', feedUrl: 'https://www.interconnects.ai/feed', note: '开源模型、RL 与 Agent 生态' },
+  { id: 'latent-space', name: 'Latent Space', category: 'article', siteUrl: 'https://www.latent.space', feedUrl: 'https://www.latent.space/feed', note: 'AI 工程访谈与 Agent 实践' },
+  { id: 'zep', name: 'Zep Blog', category: 'article', siteUrl: 'https://www.getzep.com/blog', feedUrl: 'https://www.getzep.com/blog/rss.xml', note: 'Agent 记忆层：写入、检索与投毒防御' },
+  { id: 'one-useful-thing', name: 'One Useful Thing', category: 'article', siteUrl: 'https://www.oneusefulthing.org', feedUrl: 'https://www.oneusefulthing.org/feed', note: 'Ethan Mollick，智能体在工作中的用法' },
+  { id: 'baoyu', name: '宝玉的分享', category: 'article', siteUrl: 'https://baoyu.io', feedUrl: 'https://s.baoyu.io/feed.xml', note: '中文，AI 与 Agent 实践和译文' },
+  { id: 'ruanyifeng', name: '阮一峰的网络日志', category: 'article', siteUrl: 'https://www.ruanyifeng.com/blog', feedUrl: 'https://www.ruanyifeng.com/blog/atom.xml', note: '中文技术周刊，含智能体与工具生态条目' },
+  { id: 'openai-news', name: 'OpenAI News', category: 'news', siteUrl: 'https://openai.com/news', feedUrl: 'https://openai.com/news/rss.xml', note: '官方发布，含 Agent 产品线' },
+  { id: 'google-ai', name: 'Google AI Blog', category: 'news', siteUrl: 'https://blog.google/technology/ai', feedUrl: 'https://blog.google/innovation-and-ai/technology/ai/rss/', note: '官方产品与研究，偶尔含多模态条目' },
+  { id: 'github-blog', name: 'GitHub Blog', category: 'news', siteUrl: 'https://github.blog', feedUrl: 'https://github.blog/feed/', note: '编码 Agent、Copilot 与代码评审基准' },
+  { id: 'msr', name: 'Microsoft Research', category: 'news', siteUrl: 'https://www.microsoft.com/en-us/research/blog', feedUrl: 'https://www.microsoft.com/en-us/research/feed/', note: 'Agent Lightning 等智能体框架研究' },
+  { id: 'bair', name: 'BAIR Blog', category: 'news', siteUrl: 'https://bair.berkeley.edu/blog', feedUrl: 'https://bair.berkeley.edu/blog/feed.xml', note: '伯克利 AI 研究院' },
+  { id: 'arxiv-cs-ma', name: 'arXiv cs.MA', category: 'news', siteUrl: 'https://arxiv.org/list/cs.MA/recent', feedUrl: 'https://export.arxiv.org/rss/cs.MA', note: '多智能体系统每日新论文' },
+  { id: 'arxiv-llm-agents', name: 'arXiv: LLM Agents', category: 'news', siteUrl: 'https://arxiv.org/list/cs.CL/recent', feedUrl: 'https://export.arxiv.org/api/query?search_query=all:%22LLM%20agents%22&sortBy=submittedDate&sortOrder=descending&max_results=40', note: '按提交时间倒序的 LLM Agent 论文' },
+  { id: 'arxiv-agent-memory', name: 'arXiv: Agent Memory', category: 'news', siteUrl: 'https://arxiv.org/list/cs.CL/recent', feedUrl: 'https://export.arxiv.org/api/query?search_query=all:%22agent%20memory%22&sortBy=submittedDate&sortOrder=descending&max_results=40', note: 'Agent 记忆方向新论文' },
+  { id: 'infoq-cn', name: 'InfoQ 中文', category: 'news', siteUrl: 'https://www.infoq.cn', feedUrl: 'https://www.infoq.cn/feed', note: '中文工程实践，多 Agent 产品与架构报道' },
+  { id: 'qbitai', name: '量子位', category: 'news', siteUrl: 'https://www.qbitai.com', feedUrl: 'https://www.qbitai.com/feed', note: '中文 AI 媒体，Agent 产品动态' },
+  { id: 'lesswrong', name: 'LessWrong', category: 'community', siteUrl: 'https://www.lesswrong.com', feedUrl: 'https://www.lesswrong.com/feed.xml', note: '智能体安全与长文讨论' },
+  { id: 'lobsters-ai', name: 'Lobsters AI', category: 'community', siteUrl: 'https://lobste.rs/t/ai', feedUrl: 'https://lobste.rs/t/ai.rss', note: '技术社区的 AI 话题链接' },
+];
+
+// 考察过但没有纳入的源，附验证结论。改清单时先在这里留痕，避免同一个地址反复试探。
+export const EXCLUDED_FEEDS = [
+  { name: 'Hugging Face Blog', feedUrl: 'https://huggingface.co/blog/feed.xml', reason: '本机网络不可达（连接层失败），无法验证；有代理时可自行加入「我的订阅」' },
+  { name: 'Hugging Face Daily Papers', feedUrl: 'https://huggingface.co/papers/feed', reason: '本机网络不可达，同上' },
+  { name: 'Google DeepMind Blog', feedUrl: 'https://deepmind.google/blog/rss.xml', reason: '本机网络不可达，无法验证' },
+  { name: 'LangChain Blog', feedUrl: 'https://blog.langchain.dev/rss/', reason: '本机网络不可达，无法验证；多智能体编排本来很对口' },
+  { name: 'LlamaIndex Blog', feedUrl: 'https://www.llamaindex.ai/blog/feed', reason: '404，/rss.xml 与 /blog/rss.xml 同样 404，源站无公开订阅' },
+  { name: 'Letta (MemGPT)', feedUrl: 'https://www.letta.com/blog/rss.xml', reason: '404，/blog/feed 与 /rss.xml 也 404；Agent 记忆方向对口但没有公开 RSS' },
+  { name: 'Anthropic Newsroom / Engineering', feedUrl: '', reason: '没有公开 RSS，只能读网页' },
+  { name: 'Amazon Science', feedUrl: 'https://www.amazon.science/blog/feed', reason: '404' },
+  { name: 'AI Engineer (ai.engineer)', feedUrl: 'https://www.ai.engineer/rss', reason: '404' },
+  { name: 'Mem0 Blog', feedUrl: 'https://mem0.ai/blog/rss', reason: '404' },
+  { name: 'CrewAI Blog', feedUrl: 'https://www.crewai.com/blog/rss.xml', reason: '404（跳转到 crewai.com 后仍 404）' },
+  { name: 'Model Context Protocol', feedUrl: 'https://modelcontextprotocol.io/rss.xml', reason: '404' },
+  { name: '机器之心', feedUrl: 'https://www.jiqizhixin.com/rss', reason: '/rss 跳转到 /data-service，/feed 返回的不是 XML，没有可用订阅' },
+  { name: 'Hacker News agent 关键字订阅', feedUrl: 'https://hnrss.org/newest?q=agent&points=50', reason: '502；hnrss.org/frontpage 可用但不聚焦智能体，故不纳入' },
+  { name: 'AI News (smol.ai)', feedUrl: 'https://news.smol.ai/rss.xml', reason: '可解析但大量条目为「not much happened today」，噪声高于信息量' },
+  { name: 'Chip Huyen', feedUrl: 'https://huyenchip.com/feed.xml', reason: '最新条目停在 2025-01-16，长期未更新' },
+  { name: 'Mario Zechner', feedUrl: 'https://mariozechner.at/rss.xml', reason: '最新 2026-05-30，内容转向机器人与生活随笔，超出智能体文本范围' },
+  { name: '少数派', feedUrl: 'https://sspai.com/feed', reason: '可解析但以效率工具与 App Store 资讯为主，跑题' },
 ];

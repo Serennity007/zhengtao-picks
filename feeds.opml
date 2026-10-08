@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>正涛精选</title>
+  </head>
+  <body>
+    <outline text="正涛精选" title="正涛精选">
+      <outline type="rss" text="Simon Willison" title="Simon Willison" xmlUrl="https://simonwillison.net/atom/everything/" htmlUrl="https://simonwillison.net"/>
+      <outline type="rss" text="Lilian Weng" title="Lilian Weng" xmlUrl="https://lilianweng.github.io/index.xml" htmlUrl="https://lilianweng.github.io"/>
+      <outline type="rss" text="Eugene Yan" title="Eugene Yan" xmlUrl="https://eugeneyan.com/rss/" htmlUrl="https://eugeneyan.com"/>
+      <outline type="rss" text="Hamel Husain" title="Hamel Husain" xmlUrl="https://hamel.dev/index.xml" htmlUrl="https://hamel.dev"/>
+      <outline type="rss" text="Ahead of AI" title="Ahead of AI" xmlUrl="https://magazine.sebastianraschka.com/feed" htmlUrl="https://magazine.sebastianraschka.com"/>
+      <outline type="rss" text="Interconnects" title="Interconnects" xmlUrl="https://www.interconnects.ai/feed" htmlUrl="https://www.interconnects.ai"/>
+      <outline type="rss" text="Latent Space" title="Latent Space" xmlUrl="https://www.latent.space/feed" htmlUrl="https://www.latent.space"/>
+      <outline type="rss" text="Zep Blog" title="Zep Blog" xmlUrl="https://www.getzep.com/blog/rss.xml" htmlUrl="https://www.getzep.com/blog"/>
+      <outline type="rss" text="One Useful Thing" title="One Useful Thing" xmlUrl="https://www.oneusefulthing.org/feed" htmlUrl="https://www.oneusefulthing.org"/>
+      <outline type="rss" text="宝玉的分享" title="宝玉的分享" xmlUrl="https://s.baoyu.io/feed.xml" htmlUrl="https://baoyu.io"/>
+      <outline type="rss" text="阮一峰的网络日志" title="阮一峰的网络日志" xmlUrl="https://www.ruanyifeng.com/blog/atom.xml" htmlUrl="https://www.ruanyifeng.com/blog"/>
+      <outline type="rss" text="OpenAI News" title="OpenAI News" xmlUrl="https://openai.com/news/rss.xml" htmlUrl="https://openai.com/news"/>
+      <outline type="rss" text="Google AI Blog" title="Google AI Blog" xmlUrl="https://blog.google/innovation-and-ai/technology/ai/rss/" htmlUrl="https://blog.google/technology/ai"/>
+      <outline type="rss" text="GitHub Blog" title="GitHub Blog" xmlUrl="https://github.blog/feed/" htmlUrl="https://github.blog"/>
+      <outline type="rss" text="Microsoft Research" title="Microsoft Research" xmlUrl="https://www.microsoft.com/en-us/research/feed/" htmlUrl="https://www.microsoft.com/en-us/research/blog"/>
+      <outline type="rss" text="BAIR Blog" title="BAIR Blog" xmlUrl="https://bair.berkeley.edu/blog/feed.xml" htmlUrl="https://bair.berkeley.edu/blog"/>
+      <outline type="rss" text="arXiv cs.MA" title="arXiv cs.MA" xmlUrl="https://export.arxiv.org/rss/cs.MA" htmlUrl="https://arxiv.org/list/cs.MA/recent"/>
+      <outline type="rss" text="arXiv: LLM Agents" title="arXiv: LLM Agents" xmlUrl="https://export.arxiv.org/api/query?search_query=all:%22LLM%20agents%22&amp;sortBy=submittedDate&amp;sortOrder=descending&amp;max_results=40" htmlUrl="https://arxiv.org/list/cs.CL/recent"/>
+      <outline type="rss" text="arXiv: Agent Memory" title="arXiv: Agent Memory" xmlUrl="https://export.arxiv.org/api/query?search_query=all:%22agent%20memory%22&amp;sortBy=submittedDate&amp;sortOrder=descending&amp;max_results=40" htmlUrl="https://arxiv.org/list/cs.CL/recent"/>
+      <outline type="rss" text="InfoQ 中文" title="InfoQ 中文" xmlUrl="https://www.infoq.cn/feed" htmlUrl="https://www.infoq.cn"/>
+      <outline type="rss" text="量子位" title="量子位" xmlUrl="https://www.qbitai.com/feed" htmlUrl="https://www.qbitai.com"/>
+      <outline type="rss" text="LessWrong" title="LessWrong" xmlUrl="https://www.lesswrong.com/feed.xml" htmlUrl="https://www.lesswrong.com"/>
+      <outline type="rss" text="Lobsters AI" title="Lobsters AI" xmlUrl="https://lobste.rs/t/ai.rss" htmlUrl="https://lobste.rs/t/ai"/>
+    </outline>
+  </body>
+</opml>
