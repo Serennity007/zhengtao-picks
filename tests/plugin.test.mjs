@@ -161,3 +161,78 @@ test('已读记录只保留最近 2000 条', () => {
   assert.equal(plugin.isRead('id-2599'), true);
   assert.equal(plugin.isRead('id-0'), false);
 });
+
+test('某个源挂起时刷新仍会结束，并把它记为超时失败', async () => {
+  stub.setResponses({
+    'https://hang.test/feed.xml': { hang: true },
+    'https://ok.test/feed.xml': { arrayBuffer: stub.toBuffer(rssFeed('正常源', ['https://ok.test/1'], ['Wed, 07 Oct 2026 08:00:00 GMT'])) },
+  });
+  const plugin = makePlugin();
+  plugin.settings.feedTimeoutMs = 40;
+  plugin.settings.customFeeds = [
+    { id: 'hang', name: '挂起的源', feedUrl: 'https://hang.test/feed.xml', category: 'article' },
+    { id: 'ok', name: '正常源', feedUrl: 'https://ok.test/feed.xml', category: 'article' },
+  ];
+  plugin.settings.disabledFeedIds = CURATED_FEEDS.map((feed) => feed.id);
+
+  await plugin.refresh({ silent: false });
+
+  assert.equal(plugin.loading, false);
+  assert.equal(plugin.items.length, 1);
+  assert.equal(plugin.failedFeeds()[0].name, '挂起的源');
+  assert.match(plugin.failedFeeds()[0].error, /超过 40ms 没有响应/);
+
+  // 卡死过一次之后还能再刷新，而不是 loading 永久为 true 让后续刷新空转
+  stub.setResponses({ 'https://ok.test/feed.xml': { arrayBuffer: stub.toBuffer(rssFeed('正常源', ['https://ok.test/2'], ['Thu, 08 Oct 2026 08:00:00 GMT'])) } });
+  plugin.settings.customFeeds = [plugin.settings.customFeeds[1]];
+  await plugin.refresh({ silent: true });
+  assert.equal(plugin.items.length, 1);
+  assert.equal(plugin.items[0].link, 'https://ok.test/2');
+});
+
+test('源被停用后筛选值回到全部，不会显示成「全部」却空列表', async () => {
+  stub.setResponses({
+    'https://a.test/feed.xml': { arrayBuffer: stub.toBuffer(rssFeed('源A', ['https://a.test/1'], ['Wed, 07 Oct 2026 08:00:00 GMT'])) },
+    'https://b.test/feed.xml': { arrayBuffer: stub.toBuffer(rssFeed('源B', ['https://b.test/1'], ['Tue, 06 Oct 2026 08:00:00 GMT'])) },
+  });
+  const plugin = makePlugin();
+  plugin.settings.customFeeds = [
+    { id: 'a', name: '源A', feedUrl: 'https://a.test/feed.xml', category: 'article' },
+    { id: 'b', name: '源B', feedUrl: 'https://b.test/feed.xml', category: 'article' },
+  ];
+  plugin.settings.disabledFeedIds = CURATED_FEEDS.map((feed) => feed.id);
+  await plugin.refresh({ silent: true });
+
+  const view = new PicksView({}, plugin);
+  await view.onOpen();
+  view.filter = 'b';
+  view.renderList();
+  assert.equal(view.contentEl.querySelectorAll('.zp-item').length, 1);
+
+  // 源 B 被停用后不再出现在 activeFeeds 里
+  plugin.settings.customFeeds = [plugin.settings.customFeeds[0]];
+  await plugin.refresh({ silent: true });
+  assert.equal(view.filter, '__all');
+  assert.ok(view.contentEl.querySelectorAll('.zp-item').length >= 1);
+});
+
+test('源集合没变时刷新不重建工具栏，搜索框焦点保留', async () => {
+  stub.setResponses({
+    'https://a.test/feed.xml': { arrayBuffer: stub.toBuffer(rssFeed('源A', ['https://a.test/1'], ['Wed, 07 Oct 2026 08:00:00 GMT'])) },
+  });
+  const plugin = makePlugin();
+  plugin.settings.customFeeds = [{ id: 'a', name: '源A', feedUrl: 'https://a.test/feed.xml', category: 'article' }];
+  plugin.settings.disabledFeedIds = CURATED_FEEDS.map((feed) => feed.id);
+  await plugin.refresh({ silent: true });
+
+  const view = new PicksView({}, plugin);
+  await view.onOpen();
+  const searchBefore = view.toolbarEl.querySelector('input');
+  await plugin.refresh({ silent: true });
+  assert.equal(view.toolbarEl.querySelector('input'), searchBefore, '工具栏被重建了');
+
+  // 源集合变了就必须重建，否则下拉里的选项和数量对不上
+  plugin.settings.customFeeds.push({ id: 'b', name: '源B', feedUrl: 'https://a.test/feed.xml', category: 'article' });
+  await plugin.refresh({ silent: true });
+  assert.notEqual(view.toolbarEl.querySelector('input'), searchBefore);
+});

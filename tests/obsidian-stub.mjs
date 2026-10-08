@@ -50,6 +50,7 @@ export function moment(input) {
 export async function requestUrl({ url }) {
   const entry = __state.responses[url];
   if (!entry) throw new Error(`fetch failed for ${url}`);
+  if (entry.hang) return new Promise(() => {});
   if (entry.error) throw new Error(entry.error);
   return {
     arrayBuffer: entry.arrayBuffer,

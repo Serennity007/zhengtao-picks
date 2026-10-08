@@ -102,6 +102,7 @@ var PicksView = class extends import_obsidian.ItemView {
   }
   buildToolbar() {
     this.toolbarEl.empty();
+    this.toolbarFeeds = this.feedSignature();
     const refresh = this.toolbarEl.createEl("button", { cls: "zp-btn zp-btn-icon" });
     (0, import_obsidian.setIcon)(refresh, "refresh-cw");
     refresh.setAttr("aria-label", "\u5237\u65B0\u8BA2\u9605");
@@ -119,6 +120,7 @@ var PicksView = class extends import_obsidian.ItemView {
       this.filter = select.value;
       this.renderList();
     });
+    this.selectEl = select;
     const search = this.toolbarEl.createEl("input", {
       cls: "zp-search",
       attr: { type: "search", placeholder: "\u641C\u7D22\u6807\u9898\u3001\u6458\u8981\u3001\u6765\u6E90" }
@@ -136,7 +138,13 @@ var PicksView = class extends import_obsidian.ItemView {
       this.renderList();
     });
   }
+  feedSignature() {
+    return this.plugin.activeFeeds().map((feed) => feed.id).join("|");
+  }
   visibleItems() {
+    if (this.filter !== ALL && !this.plugin.activeFeeds().some((feed) => feed.id === this.filter)) {
+      this.filter = ALL;
+    }
     const items = this.plugin.items;
     return items.filter((item) => {
       if (this.filter !== ALL && item.feedId !== this.filter) return false;
@@ -147,12 +155,13 @@ var PicksView = class extends import_obsidian.ItemView {
   }
   renderList() {
     if (!this.listEl) return;
+    const items = this.visibleItems();
+    if (this.selectEl) this.selectEl.value = this.filter;
     this.listEl.empty();
     if (this.plugin.loading) {
       this.statusEl.setText("\u6B63\u5728\u8BFB\u53D6\u8BA2\u9605\u2026");
       return;
     }
-    const items = this.visibleItems();
     const failed = this.plugin.failedFeeds();
     const parts = [`\u5171 ${items.length} \u7BC7`, `\u63D2\u4EF6\u81EA\u8BFB\u8BA2\u9605 ${this.plugin.activeFeeds().length} \u4E2A\u6E90`];
     if (this.plugin.lastRefresh) parts.push(`\u66F4\u65B0\u4E8E ${(0, import_obsidian.moment)(this.plugin.lastRefresh).format("MM-DD HH:mm")}`);
@@ -195,7 +204,7 @@ var PicksView = class extends import_obsidian.ItemView {
     });
   }
   refresh() {
-    this.buildToolbar();
+    if (this.toolbarFeeds !== this.feedSignature()) this.buildToolbar();
     this.renderList();
   }
 };
@@ -207,6 +216,7 @@ var DEFAULT_SETTINGS = {
   refreshIntervalMinutes: 120,
   maxItems: 200,
   perFeedLimit: 25,
+  feedTimeoutMs: 2e4,
   disabledFeedIds: [],
   customFeeds: [],
   dailyNoteFolder: "",
@@ -243,6 +253,13 @@ var PicksSettingTab = class extends import_obsidian2.PluginSettingTab {
       (text) => text.setValue(String(this.plugin.settings.maxItems)).onChange(async (value) => {
         const parsed = Number.parseInt(value, 10);
         this.plugin.settings.maxItems = Number.isNaN(parsed) || parsed < 20 ? 200 : parsed;
+        await this.plugin.saveState();
+      })
+    );
+    new import_obsidian2.Setting(containerEl).setName("\u5355\u4E2A\u6E90\u8D85\u65F6\uFF08\u6BEB\u79D2\uFF09").setDesc("Obsidian \u7684 requestUrl \u4E0D\u652F\u6301\u4E2D\u65AD\uFF0C\u8D85\u65F6\u540E\u8BE5\u6E90\u8BB0\u4E3A\u5931\u8D25\u4F46\u4E0D\u518D\u62D6\u4F4F\u6574\u6B21\u5237\u65B0\uFF1B\u8D70\u4EE3\u7406\u6216\u7F51\u7EDC\u6162\u65F6\u53EF\u8C03\u5927\u3002").addText(
+      (text) => text.setValue(String(this.plugin.settings.feedTimeoutMs)).onChange(async (value) => {
+        const parsed = Number.parseInt(value, 10);
+        this.plugin.settings.feedTimeoutMs = Number.isNaN(parsed) || parsed < 1e3 ? 2e4 : parsed;
         await this.plugin.saveState();
       })
     );
@@ -536,7 +553,7 @@ var ZhengtaoPicksPlugin = class extends import_obsidian3.Plugin {
     this.feedStatus = {};
     for (let index = 0; index < feeds.length; index += CONCURRENCY) {
       const batch = feeds.slice(index, index + CONCURRENCY);
-      const results = await Promise.allSettled(batch.map((feed) => this.fetchFeed(feed)));
+      const results = await Promise.allSettled(batch.map((feed) => this.fetchWithTimeout(feed)));
       results.forEach((result, offset) => {
         const feed = batch[offset];
         if (result.status === "fulfilled") {
@@ -558,6 +575,19 @@ var ZhengtaoPicksPlugin = class extends import_obsidian3.Plugin {
         `\u6B63\u6D9B\u7CBE\u9009\uFF1A\u8BFB\u5230 ${this.items.length} \u7BC7\uFF0C\u6765\u81EA ${feeds.length - failed.length}/${feeds.length} \u4E2A\u6E90` + (failed.length ? `\uFF1B\u5931\u8D25\uFF1A${failed.map((entry) => entry.name).join("\u3001")}` : "")
       );
     }
+  }
+  // requestUrl 既没有 signal 也没有 timeout，连接被挂起时 Promise 永不落地；
+  // 一个源卡住会让整批 allSettled 不返回，loading 永远为 true，之后所有刷新空转。
+  fetchWithTimeout(feed) {
+    let timer = null;
+    const timeout = new Promise((_, reject) => {
+      timer = window.setTimeout(() => {
+        reject(new Error(`\u8D85\u8FC7 ${this.settings.feedTimeoutMs}ms \u6CA1\u6709\u54CD\u5E94`));
+      }, this.settings.feedTimeoutMs);
+    });
+    return Promise.race([this.fetchFeed(feed), timeout]).finally(() => {
+      if (timer !== null) window.clearTimeout(timer);
+    });
   }
   async fetchFeed(feed) {
     const response = await (0, import_obsidian3.requestUrl)({

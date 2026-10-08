@@ -52,6 +52,7 @@ export class PicksView extends ItemView {
 
   buildToolbar() {
     this.toolbarEl.empty();
+    this.toolbarFeeds = this.feedSignature();
 
     const refresh = this.toolbarEl.createEl('button', { cls: 'zp-btn zp-btn-icon' });
     setIcon(refresh, 'refresh-cw');
@@ -71,6 +72,7 @@ export class PicksView extends ItemView {
       this.filter = select.value;
       this.renderList();
     });
+    this.selectEl = select;
 
     const search = this.toolbarEl.createEl('input', {
       cls: 'zp-search',
@@ -91,7 +93,18 @@ export class PicksView extends ItemView {
     });
   }
 
+  feedSignature() {
+    return this.plugin
+      .activeFeeds()
+      .map((feed) => feed.id)
+      .join('|');
+  }
+
   visibleItems() {
+    // 源被停用或删掉后，筛选值会指向不存在的源：此时回到「全部」，否则会显示成「全部」却一条都没有。
+    if (this.filter !== ALL && !this.plugin.activeFeeds().some((feed) => feed.id === this.filter)) {
+      this.filter = ALL;
+    }
     const items = this.plugin.items;
     return items.filter((item) => {
       if (this.filter !== ALL && item.feedId !== this.filter) return false;
@@ -106,6 +119,9 @@ export class PicksView extends ItemView {
 
   renderList() {
     if (!this.listEl) return;
+    const items = this.visibleItems();
+    // visibleItems 可能把失效的筛选值改回「全部」，下拉框要跟着同步。
+    if (this.selectEl) this.selectEl.value = this.filter;
     this.listEl.empty();
 
     if (this.plugin.loading) {
@@ -113,7 +129,6 @@ export class PicksView extends ItemView {
       return;
     }
 
-    const items = this.visibleItems();
     const failed = this.plugin.failedFeeds();
     const parts = [`共 ${items.length} 篇`, `插件自读订阅 ${this.plugin.activeFeeds().length} 个源`];
     if (this.plugin.lastRefresh) parts.push(`更新于 ${moment(this.plugin.lastRefresh).format('MM-DD HH:mm')}`);
@@ -163,7 +178,8 @@ export class PicksView extends ItemView {
   }
 
   refresh() {
-    this.buildToolbar();
+    // 源集合没变就不重建工具栏：定时器落在搜索框输入到一半时，重建会丢焦点和光标。
+    if (this.toolbarFeeds !== this.feedSignature()) this.buildToolbar();
     this.renderList();
   }
 }

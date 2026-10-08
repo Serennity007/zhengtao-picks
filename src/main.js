@@ -130,7 +130,7 @@ export default class ZhengtaoPicksPlugin extends Plugin {
 
     for (let index = 0; index < feeds.length; index += CONCURRENCY) {
       const batch = feeds.slice(index, index + CONCURRENCY);
-      const results = await Promise.allSettled(batch.map((feed) => this.fetchFeed(feed)));
+      const results = await Promise.allSettled(batch.map((feed) => this.fetchWithTimeout(feed)));
       results.forEach((result, offset) => {
         const feed = batch[offset];
         if (result.status === 'fulfilled') {
@@ -157,6 +157,20 @@ export default class ZhengtaoPicksPlugin extends Plugin {
           (failed.length ? `；失败：${failed.map((entry) => entry.name).join('、')}` : '')
       );
     }
+  }
+
+  // requestUrl 既没有 signal 也没有 timeout，连接被挂起时 Promise 永不落地；
+  // 一个源卡住会让整批 allSettled 不返回，loading 永远为 true，之后所有刷新空转。
+  fetchWithTimeout(feed) {
+    let timer = null;
+    const timeout = new Promise((_, reject) => {
+      timer = window.setTimeout(() => {
+        reject(new Error(`超过 ${this.settings.feedTimeoutMs}ms 没有响应`));
+      }, this.settings.feedTimeoutMs);
+    });
+    return Promise.race([this.fetchFeed(feed), timeout]).finally(() => {
+      if (timer !== null) window.clearTimeout(timer);
+    });
   }
 
   async fetchFeed(feed) {

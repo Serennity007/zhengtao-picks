@@ -5,6 +5,7 @@ export const DEFAULT_SETTINGS = {
   refreshIntervalMinutes: 120,
   maxItems: 200,
   perFeedLimit: 25,
+  feedTimeoutMs: 20000,
   disabledFeedIds: [],
   customFeeds: [],
   dailyNoteFolder: '',
@@ -55,6 +56,17 @@ export class PicksSettingTab extends PluginSettingTab {
         text.setValue(String(this.plugin.settings.maxItems)).onChange(async (value) => {
           const parsed = Number.parseInt(value, 10);
           this.plugin.settings.maxItems = Number.isNaN(parsed) || parsed < 20 ? 200 : parsed;
+          await this.plugin.saveState();
+        })
+      );
+
+    new Setting(containerEl)
+      .setName('单个源超时（毫秒）')
+      .setDesc('Obsidian 的 requestUrl 不支持中断，超时后该源记为失败但不再拖住整次刷新；走代理或网络慢时可调大。')
+      .addText((text) =>
+        text.setValue(String(this.plugin.settings.feedTimeoutMs)).onChange(async (value) => {
+          const parsed = Number.parseInt(value, 10);
+          this.plugin.settings.feedTimeoutMs = Number.isNaN(parsed) || parsed < 1000 ? 20000 : parsed;
           await this.plugin.saveState();
         })
       );
