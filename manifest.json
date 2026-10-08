@@ -1,0 +1,10 @@
+{
+  "id": "zhengtao-picks",
+  "name": "正涛精选",
+  "version": "1.0.0",
+  "minAppVersion": "1.4.0",
+  "description": "阅读多智能体、Agent 记忆与 LLM 智能体方向的精选 RSS / Atom，一键把文章链接记入今日日记。",
+  "author": "正涛 (Serennity007)",
+  "authorUrl": "https://github.com/Serennity007",
+  "isDesktopOnly": false
+}
