@@ -1,5 +1,9 @@
 # 更新记录
 
+## 1.2.0 · 2026-10-08
+
+- 图标从 `rss` 换成 `telescope`。原因：Qiaomu AI RSS 的 ribbon 图标就是 `rss`，两个插件并排会看不出区别；`telescope` 也贴合"从信息源里找好东西"的定位。已确认该图标存在于 Obsidian 图标注册表（`IconName` 只是 `string`，写错不会报错、只会静默渲染成空白）。
+
 ## 1.1.0 · 2026-10-08
 
 - 修复：单个订阅源被挂起时整次刷新会永久卡住。Obsidian 的 `requestUrl` 既不支持 `signal` 也不支持 `timeout`，一个不返回的响应会让 `Promise.allSettled` 永不落地，`loading` 一直为 true，之后每次刷新都直接空转，只能重启 Obsidian 恢复。现在每个源单独超时（默认 20000ms，设置可调），超时记为失败源，其余源照常出结果。

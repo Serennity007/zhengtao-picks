@@ -1,6 +1,6 @@
 {
   "name": "zhengtao-picks",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "正涛精选 — Obsidian reader for multi-agent, agent-memory and LLM agent RSS picks",
   "private": true,
   "type": "module",

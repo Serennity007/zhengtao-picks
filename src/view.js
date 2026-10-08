@@ -28,7 +28,7 @@ export class PicksView extends ItemView {
   }
 
   getIcon() {
-    return 'rss';
+    return 'telescope';
   }
 
   async onOpen() {

@@ -82,7 +82,7 @@ var PicksView = class extends import_obsidian.ItemView {
     return "\u6B63\u6D9B\u7CBE\u9009";
   }
   getIcon() {
-    return "rss";
+    return "telescope";
   }
   async onOpen() {
     this.plugin.attachView(this);
@@ -466,7 +466,7 @@ var ZhengtaoPicksPlugin = class extends import_obsidian3.Plugin {
   async onload() {
     await this.loadState();
     this.registerView(VIEW_TYPE_PICKS, (leaf) => new PicksView(leaf, this));
-    this.addRibbonIcon("rss", "\u6B63\u6D9B\u7CBE\u9009\uFF1A\u6253\u5F00\u9605\u8BFB\u5668", () => {
+    this.addRibbonIcon("telescope", "\u6B63\u6D9B\u7CBE\u9009\uFF1A\u6253\u5F00\u9605\u8BFB\u5668", () => {
       void this.activateView();
     });
     this.addCommand({

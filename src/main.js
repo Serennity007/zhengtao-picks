@@ -29,7 +29,7 @@ export default class ZhengtaoPicksPlugin extends Plugin {
     await this.loadState();
 
     this.registerView(VIEW_TYPE_PICKS, (leaf) => new PicksView(leaf, this));
-    this.addRibbonIcon('rss', '正涛精选：打开阅读器', () => {
+    this.addRibbonIcon('telescope', '正涛精选：打开阅读器', () => {
       void this.activateView();
     });
     this.addCommand({
