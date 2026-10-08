@@ -10,10 +10,12 @@
     "gen:feeds": "node scripts/build-feeds.mjs",
     "feeds:check": "node scripts/live-check.mjs",
     "test": "node --test \"tests/**/*.test.mjs\"",
-    "check": "npm test && npm run gen:feeds && npm run build"
+    "check": "npm test && npm run check:api && npm run gen:feeds && npm run build",
+    "check:api": "node scripts/check-api.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.28.2",
-    "jsdom": "^30.0.1"
+    "jsdom": "^30.0.1",
+    "obsidian": "^1.13.1"
   }
 }

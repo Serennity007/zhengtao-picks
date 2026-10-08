@@ -33,9 +33,9 @@ function makePlugin(files = {}) {
 
 test.beforeEach(() => {
   stub.__state.notices.length = 0;
-  stub.__state.opened.length = 0;
   stub.__state.saved.length = 0;
   stub.__state.settings.length = 0;
+  window.__openedUrls.length = 0;
 });
 
 test('刷新会合并所有源、按时间倒序并标记失败源', async () => {
@@ -101,6 +101,13 @@ test('列表支持搜索、按源筛选与只看未读', async () => {
   view.unreadOnly = false;
   view.renderList();
   assert.equal(view.contentEl.querySelectorAll('.zp-item.is-read').length, 1);
+
+  // 「原文」按钮走 window.open，并标记该条已读
+  const firstRow = view.contentEl.querySelector('.zp-item');
+  const openBtn = firstRow.querySelectorAll('.zp-item-actions button')[1];
+  openBtn.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+  assert.deepEqual(window.__openedUrls, [plugin.items[0].link]);
+  assert.equal(plugin.isRead(plugin.items[0].id), true);
 });
 
 test('记日记会沿用核心日记设置、去除重复并避免二次写入', async () => {

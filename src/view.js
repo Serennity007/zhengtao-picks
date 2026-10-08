@@ -1,4 +1,4 @@
-import { ItemView, setIcon, moment, open } from 'obsidian';
+import { ItemView, setIcon, moment } from 'obsidian';
 
 export const VIEW_TYPE_PICKS = 'zhengtao-picks-view';
 const ALL = '__all';
@@ -152,13 +152,13 @@ export class PicksView extends ItemView {
     openBtn.addEventListener('click', (event) => {
       event.stopPropagation();
       this.plugin.markRead(item.id);
-      if (item.link) open(item.link);
+      if (item.link) window.open(item.link);
     });
 
     main.addEventListener('click', () => {
       this.plugin.markRead(item.id);
       row.toggleClass('is-read', true);
-      if (item.link) open(item.link);
+      if (item.link) window.open(item.link);
     });
   }
 

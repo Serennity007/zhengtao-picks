@@ -54,11 +54,15 @@ Read a curated set of **AI-agent, text-only** RSS/Atom feeds inside Obsidian: mu
 
 ```bash
 npm install
-npm test              # node --test，解析器单测
+npm test              # node --test，解析器与离线冒烟测试
+npm run check:api     # 把 src 里从 'obsidian' 导入的符号对着官方 obsidian.d.ts 校验
 npm run gen:feeds     # 由 src/feeds.js 生成 feeds.opml 与 docs/FEEDS.md
+npm run feeds:check   # 用插件同一条解码/解析路径真实抓取每个源，报告条目数与最新日期
 npm run build         # esbuild 打包出 main.js
-npm run check         # test + build
+npm run check         # test + check:api + gen:feeds + build
 ```
+
+`check:api` 不是装饰：开发过程中曾经 `import { open } from 'obsidian'`，而这个符号在当前版本的 `obsidian.d.ts` 里并不存在，运行时会是 `undefined`，只有真点一下条目才暴露。外链改用 `window.open`，脚本把这类问题挡在构建前。
 
 订阅源的唯一数据源是 `src/feeds.js`；`feeds.opml` 和 `docs/FEEDS.md` 都是生成产物，改源清单后重新 `npm run gen:feeds`。
 

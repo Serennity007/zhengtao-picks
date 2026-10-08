@@ -10,6 +10,13 @@ globalThis.Node = window.Node;
 globalThis.HTMLElement = window.HTMLElement;
 globalThis.Element = window.Element;
 
+// 插件用 window.open 打开外链；jsdom 默认会走导航实现，这里换成可断言的记录器。
+window.__openedUrls = [];
+window.open = (url) => {
+  window.__openedUrls.push(url);
+  return null;
+};
+
 function applyOptions(el, options) {
   if (options.cls) {
     for (const name of String(options.cls).split(/\s+/).filter(Boolean)) el.classList.add(name);

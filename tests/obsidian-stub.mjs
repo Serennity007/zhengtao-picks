@@ -2,7 +2,6 @@ import './dom.mjs';
 
 export const __state = {
   notices: [],
-  opened: [],
   saved: [],
   responses: {},
   settings: [],
@@ -23,10 +22,6 @@ export class Notice {
 }
 
 export function setIcon() {}
-
-export function open(url) {
-  __state.opened.push(url);
-}
 
 export function normalizePath(path) {
   return String(path).replace(/\\/g, '/').replace(/\/{2,}/g, '/').replace(/\/+$/, '');
