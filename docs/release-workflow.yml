@@ -1,3 +1,6 @@
+# 打 tag 后自动发 Release 的工作流。
+# 启用方式：先 `gh auth refresh -s workflow`，再把这个文件复制到 .github/workflows/release.yml。
+# 当前推送用的 token 没有 workflow 权限，所以先放在 docs/ 下，Release 由本地 `gh release create` 发布。
 name: Release
 
 on:

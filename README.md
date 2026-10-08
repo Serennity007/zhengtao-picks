@@ -62,6 +62,8 @@ npm run check         # test + build
 
 订阅源的唯一数据源是 `src/feeds.js`；`feeds.opml` 和 `docs/FEEDS.md` 都是生成产物，改源清单后重新 `npm run gen:feeds`。
 
+`docs/release-workflow.yml` 是打 tag 自动发 Release 的 GitHub Actions 工作流。因为推送用的 token 没有 `workflow` 权限，它暂时放在 `docs/` 下；想启用，先 `gh auth refresh -s workflow`，再把它复制到 `.github/workflows/release.yml`。在此之前，Release 用 `gh release create` 从本地发布。
+
 ## License
 
 [MIT](LICENSE) © 2026 正涛 (Serennity007)
