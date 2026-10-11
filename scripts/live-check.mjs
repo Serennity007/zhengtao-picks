@@ -26,7 +26,10 @@ async function check(feed) {
     const buffer = await response.arrayBuffer();
     const xml = decodeXmlBytes(buffer, response.headers.get('content-type') || '');
     const parsed = parseFeedXml(xml, response.url);
-    if (!parsed.items.length) throw new Error('解析成功但没有条目');
+    if (!parsed.items.length) {
+      // arXiv 这类 announcement 订阅在非发布日（周末、节假日）本来就是空频道，不能算源挂了。
+      return { feed, ok: true, empty: true, count: 0, format: parsed.format, newest: '无日期', redirected: response.url !== feed.feedUrl ? response.url : '', titles: [] };
+    }
     const newest = parsed.items.reduce((max, item) => Math.max(max, item.publishedTs), 0);
     return {
       feed,
@@ -53,6 +56,10 @@ results.sort((a, b) => Number(b.ok) - Number(a.ok) || a.feed.name.localeCompare(
 for (const row of results) {
   if (!row.ok) {
     console.log(`✖ ${row.feed.name} · ${row.error}`);
+    continue;
+  }
+  if (row.empty) {
+    console.log(`⚠ ${row.feed.name} · 解析成功，当期无条目（非发布日的空频道）· ${row.format}` + (row.redirected ? ` · 跳转到 ${row.redirected}` : ''));
     continue;
   }
   const stale = row.newest !== '无日期' && row.newest < STALE_BEFORE;
